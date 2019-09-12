@@ -18,11 +18,35 @@ namespace Household.Data
         public DbSet<Household.Models.Room> Room { get; set; }
         public DbSet<Household.Models.ProductType> ProductType { get; set; }
 
-        //ApplicationUser user = new ApplicationUser
-        //{
-        //    FirstName = "Bill",
-        //    LastName = "Smith",
-        //    Email = "BillSmith@email.com"
-        //}
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<ProductType>().HasData(
+                new ProductType()
+                {
+                    Id = 1,
+                    Name = "Small Kitchen Appliances"
+                },
+
+                new ProductType()
+                {
+                    Id = 2,
+                    Name = "Large Kitchen Appliances"
+                },
+                 new ProductType()
+                 {
+                     Id = 3,
+                     Name = "Electronics"
+                 },
+                  new ProductType()
+                  {
+                      Id = 4,
+                      Name = "Utilies"
+                  }
+
+
+                );
+        }
     }
 }

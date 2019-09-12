@@ -46,6 +46,36 @@ namespace Household.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
+            var productTypeList = _context.ProductType.ToList();
+            var productTypeSelectList = productTypeList.Select(type => new SelectListItem
+            {
+                Text = type.Name,
+                Value = type.Id.ToString()
+            }).ToList();
+            productTypeSelectList.Insert(0, new SelectListItem
+            {
+                Text = "Choose Product Type",
+                Value = ""
+            });
+
+            ViewData["ProductTypes"] = productTypeSelectList;
+
+            var roomTypeList = _context.Room.ToList();
+            var roomTypeSelectList = roomTypeList.Select(type => new SelectListItem
+            {
+                Text = type.Name,
+                Value = type.Id.ToString()
+            }).ToList();
+            roomTypeSelectList.Insert(0, new SelectListItem
+            {
+                Text = "Choose Room",
+                Value = ""
+            });
+
+            ViewData["Rooms"] = roomTypeSelectList;
+
+
+
             return View();
         }
 

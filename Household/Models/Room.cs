@@ -12,5 +12,7 @@ namespace Household.Models
         public string Name { get; set; }
 
         public string ImagePath { get; set; }
+
+        public virtual ICollection<Products> Products { get; set; }
     }
 }
