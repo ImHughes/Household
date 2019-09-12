@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace Household.Models
     {
         public int Id { get; set; }
 
+        [Display(Name = "Product Type")]
         public int ProductTypeId { get; set; }
 
         public string Make { get; set; }
@@ -22,5 +24,13 @@ namespace Household.Models
         public string UserId { get; set; }
 
         public int RoomId { get; set; }
+
+        public ProductType ProductType { get; set; }
+
+        public Room Room { get; set; }
+
+
+
+
     }
 }

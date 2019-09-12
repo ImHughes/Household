@@ -4,14 +4,16 @@ using Household.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Household.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190912151501_productType")]
+    partial class productType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,7 +84,11 @@ namespace Household.Data.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<int?>("ProductTypeId");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductTypeId");
 
                     b.ToTable("ProductType");
 
@@ -131,10 +137,6 @@ namespace Household.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductTypeId");
-
-                    b.HasIndex("RoomId");
-
                     b.ToTable("Products");
                 });
 
@@ -148,7 +150,11 @@ namespace Household.Data.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<int?>("RoomId");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
 
                     b.ToTable("Room");
                 });
@@ -267,17 +273,18 @@ namespace Household.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Household.Models.Products", b =>
+            modelBuilder.Entity("Household.Models.ProductType", b =>
                 {
-                    b.HasOne("Household.Models.ProductType", "ProductType")
-                        .WithMany("Products")
-                        .HasForeignKey("ProductTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("Household.Models.ProductType")
+                        .WithMany("ProductTypes")
+                        .HasForeignKey("ProductTypeId");
+                });
 
-                    b.HasOne("Household.Models.Room", "Room")
-                        .WithMany("Products")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity("Household.Models.Room", b =>
+                {
+                    b.HasOne("Household.Models.Room")
+                        .WithMany("Rooms")
+                        .HasForeignKey("RoomId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
