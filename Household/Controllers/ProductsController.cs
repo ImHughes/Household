@@ -22,7 +22,10 @@ namespace Household.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            var applicationDbContext = _context.Products
+                .Include(t => t.ProductType)
+                .Include(t => t.Room);
+            return View(applicationDbContext);
         }
 
         // GET: Products/Details/5
@@ -98,6 +101,33 @@ namespace Household.Controllers
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            var productTypeList = _context.ProductType.ToList();
+            var productTypeSelectList = productTypeList.Select(type => new SelectListItem
+            {
+                Text = type.Name,
+                Value = type.Id.ToString()
+            }).ToList();
+            productTypeSelectList.Insert(0, new SelectListItem
+            {
+                Text = "Choose Product Type",
+                Value = ""
+            });
+
+            ViewData["ProductTypes"] = productTypeSelectList;
+
+            var roomTypeList = _context.Room.ToList();
+            var roomTypeSelectList = roomTypeList.Select(type => new SelectListItem
+            {
+                Text = type.Name,
+                Value = type.Id.ToString()
+            }).ToList();
+            roomTypeSelectList.Insert(0, new SelectListItem
+            {
+                Text = "Choose Room",
+                Value = ""
+            });
+
+            ViewData["Rooms"] = roomTypeSelectList;
             if (id == null)
             {
                 return NotFound();
