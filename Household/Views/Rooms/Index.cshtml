@@ -28,7 +28,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImagePath)
+                <img width="100" height="100" src="~/@Url.Content(item.ImagePath)" />
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
