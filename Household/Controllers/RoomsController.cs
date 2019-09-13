@@ -28,6 +28,9 @@ namespace Household.Controllers
         // GET: Rooms/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            var productsItems = _context.Products
+                .Where(p => p.RoomId == id);
+
             if (id == null)
             {
                 return NotFound();
@@ -39,7 +42,7 @@ namespace Household.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["ProductsItems"] = productsItems;
             return View(room);
         }
 
