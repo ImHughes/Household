@@ -7,24 +7,33 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Household.Data;
 using Household.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Household.Controllers
 {
     public class ProductTypesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProductTypesController(ApplicationDbContext context)
+        public ProductTypesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
-
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+        [Authorize]
         // GET: ProductTypes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ProductType.ToListAsync());
+            var user = await GetUserAsync();
+            var productType = from pt in _context.ProductType
+                              .Where(pt => pt.UserId == user.Id)
+                              select pt;
+            return View(productType);
         }
-
+        [Authorize]
         // GET: ProductTypes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -42,13 +51,13 @@ namespace Household.Controllers
 
             return View(productType);
         }
-
+        [Authorize]
         // GET: ProductTypes/Create
         public IActionResult Create()
         {
             return View();
         }
-
+        [Authorize]
         // POST: ProductTypes/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -56,15 +65,21 @@ namespace Household.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] ProductType productType)
         {
+            ApplicationUser user = await GetCurrentUserAsync();
+            productType.UserId = user.Id;
+
+            ModelState.Remove("User");
+            ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
+                productType.UserId = user.Id;
                 _context.Add(productType);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(productType);
         }
-
+        [Authorize]
         // GET: ProductTypes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -80,7 +95,7 @@ namespace Household.Controllers
             }
             return View(productType);
         }
-
+        [Authorize]
         // POST: ProductTypes/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -115,7 +130,7 @@ namespace Household.Controllers
             }
             return View(productType);
         }
-
+        [Authorize]
         // GET: ProductTypes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -133,7 +148,7 @@ namespace Household.Controllers
 
             return View(productType);
         }
-
+        [Authorize]
         // POST: ProductTypes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -148,6 +163,10 @@ namespace Household.Controllers
         private bool ProductTypeExists(int id)
         {
             return _context.ProductType.Any(e => e.Id == id);
+        }
+        private Task<ApplicationUser> GetUserAsync()
+        {
+            return _userManager.GetUserAsync(HttpContext.User);
         }
     }
 }

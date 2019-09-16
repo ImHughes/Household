@@ -4,16 +4,14 @@ using Household.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Household.Data.Migrations
+namespace Household.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190913165053_roomImage")]
-    partial class roomImage
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,31 +82,12 @@ namespace Household.Data.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("UserId")
+                        .IsRequired();
+
                     b.HasKey("Id");
 
                     b.ToTable("ProductType");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Small Kitchen Appliances"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Large Kitchen Appliances"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Electronics"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Utilies"
-                        });
                 });
 
             modelBuilder.Entity("Household.Models.Products", b =>
@@ -127,7 +106,8 @@ namespace Household.Data.Migrations
 
                     b.Property<string>("SerialNumber");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .IsRequired();
 
                     b.Property<DateTime>("WarrantyExperation");
 

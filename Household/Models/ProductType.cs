@@ -14,6 +14,8 @@ namespace Household.Models
         public string Name { get; set; }
 
         public virtual ICollection<Products> Products { get; set; }
-       
+
+        [Required]
+        public string UserId { get; set; }
     }
 }

@@ -5,7 +5,6 @@ C:\Users\hughes\backend\Household\Household\bin\Debug\netcoreapp2.2\Household.dl
 C:\Users\hughes\backend\Household\Household\bin\Debug\netcoreapp2.2\Household.pdb
 C:\Users\hughes\backend\Household\Household\bin\Debug\netcoreapp2.2\Household.Views.dll
 C:\Users\hughes\backend\Household\Household\bin\Debug\netcoreapp2.2\Household.Views.pdb
-C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.csprojAssemblyReference.cache
 C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.csproj.CoreCompileInputs.cache
 C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.RazorAssemblyInfo.cache
 C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.RazorAssemblyInfo.cs
@@ -50,3 +49,4 @@ C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.Vi
 C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.dll
 C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.pdb
 C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.csproj.CopyComplete
+C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.csprojAssemblyReference.cache

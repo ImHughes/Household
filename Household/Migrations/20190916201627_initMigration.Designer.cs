@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Household.Data.Migrations
+namespace Household.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190912152055_roomProductTypes")]
-    partial class roomProductTypes
+    [Migration("20190916201627_initMigration")]
+    partial class initMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -84,31 +84,12 @@ namespace Household.Data.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("UserId")
+                        .IsRequired();
+
                     b.HasKey("Id");
 
                     b.ToTable("ProductType");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Small Kitchen Appliances"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Large Kitchen Appliances"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Electronics"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Utilies"
-                        });
                 });
 
             modelBuilder.Entity("Household.Models.Products", b =>
@@ -127,7 +108,8 @@ namespace Household.Data.Migrations
 
                     b.Property<string>("SerialNumber");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .IsRequired();
 
                     b.Property<DateTime>("WarrantyExperation");
 
@@ -150,7 +132,12 @@ namespace Household.Data.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("UserId")
+                        .IsRequired();
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Room");
                 });
@@ -279,6 +266,14 @@ namespace Household.Data.Migrations
                     b.HasOne("Household.Models.Room", "Room")
                         .WithMany("Products")
                         .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Household.Models.Room", b =>
+                {
+                    b.HasOne("Household.Models.ApplicationUser", "user")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
