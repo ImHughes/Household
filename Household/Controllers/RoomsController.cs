@@ -10,6 +10,7 @@ using Household.Models;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Household.Controllers
 {
@@ -24,13 +25,17 @@ namespace Household.Controllers
             _userManager = userManager;
         }
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
-
+        [Authorize]
         // GET: Rooms
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Room.ToListAsync());
+            var user = await GetUserAsync();
+            var rooms = from r in _context.Room
+                        .Where(r => r.UserId == user.Id)
+                        select r;
+            return View(rooms);
         }
-
+        [Authorize]
         // GET: Rooms/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -51,13 +56,13 @@ namespace Household.Controllers
             ViewData["ProductsItems"] = productsItems;
             return View(room);
         }
-
+        [Authorize]
         // GET: Rooms/Create
         public IActionResult Create()
         {
             return View();
         }
-
+        [Authorize]
         // POST: Rooms/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -65,6 +70,29 @@ namespace Household.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,ImagePath")] Room room, IFormFile file)
         {
+            ApplicationUser user = await GetCurrentUserAsync();
+            room.UserId = user.Id;
+            room.ImagePath = await WriteFileToImagesDirectory(file);
+
+            ModelState.Remove("User");
+            ModelState.Remove("UserId");
+            if (ModelState.IsValid)
+            {
+               
+                room.UserId = user.Id;
+                _context.Add(room);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+
+
+            }
+            return View(room);
+        }
+
+        private static async Task<string> WriteFileToImagesDirectory(IFormFile file)
+        {
+            if (file == null) return "";
+
             var path = Path.Combine(
                Directory.GetCurrentDirectory(), "wwwroot",
                "images", file.FileName);
@@ -74,23 +102,9 @@ namespace Household.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            ApplicationUser user = await GetCurrentUserAsync();
-            room.UserId = user.Id;
-            room.ImagePath = "images/" + file.FileName;
-
-            ModelState.Remove("User");
-            ModelState.Remove("UserId");
-            if (ModelState.IsValid)
-            {
-                _context.Add(room);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-
-              
-            }
-            return View(room);
+            return "images/" + file.FileName;
         }
-
+        [Authorize]
         // GET: Rooms/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -106,7 +120,7 @@ namespace Household.Controllers
             }
             return View(room);
         }
-
+        [Authorize]
         // POST: Rooms/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -141,7 +155,7 @@ namespace Household.Controllers
             }
             return View(room);
         }
-
+        [Authorize]
         // GET: Rooms/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -159,7 +173,7 @@ namespace Household.Controllers
 
             return View(room);
         }
-
+        [Authorize]
         // POST: Rooms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

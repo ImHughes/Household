@@ -20,7 +20,7 @@ namespace Household.Models
         public string SerialNumber { get; set; }
 
         public DateTime WarrantyExperation { get; set; }
-
+        [Required]
         public string UserId { get; set; }
 
         public int RoomId { get; set; }
@@ -28,6 +28,7 @@ namespace Household.Models
         public ProductType ProductType { get; set; }
 
         public Room Room { get; set; }
+        
 
 
 

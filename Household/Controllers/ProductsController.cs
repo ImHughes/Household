@@ -7,27 +7,42 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Household.Data;
 using Household.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Household.Controllers
 {
+    [Authorize]
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
+        [Authorize]
         // GET: Products
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.Products
-                .Include(t => t.ProductType)
-                .Include(t => t.Room);
-            return View(applicationDbContext);
-        }
+        public async Task<IActionResult> Index(string searchString)
+        {   
+            ViewBag.CurrentFilter = searchString;
+            var user = await GetUserAsync();
+            var products = from p in _context.Products
+                .Include(p => p.ProductType)               
+                .Include(p => p.Room)              
+                .Where(p => p.UserId == user.Id).ToList()
+                           select p;
 
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(p => p.ProductType.Name.Contains(searchString));
+            }
+            return View(products);
+        }
+        [Authorize]
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -45,7 +60,7 @@ namespace Household.Controllers
 
             return View(products);
         }
-
+        [Authorize]
         // GET: Products/Create
         public IActionResult Create()
         {
@@ -81,7 +96,7 @@ namespace Household.Controllers
 
             return View();
         }
-
+        [Authorize]
         // POST: Products/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -89,15 +104,20 @@ namespace Household.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,ProductTypeId,Make,Model,SerialNumber,WarrantyExperation,UserId,RoomId")] Products products)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(products);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+
+            ModelState.Remove("UserId");
+                if (ModelState.IsValid)
+                {
+                var user = await GetUserAsync();
+                products.UserId = user.Id;
+                    _context.Add(products);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+          
             return View(products);
         }
-
+        [Authorize]
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -140,7 +160,7 @@ namespace Household.Controllers
             }
             return View(products);
         }
-
+        [Authorize]
         // POST: Products/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -175,7 +195,7 @@ namespace Household.Controllers
             }
             return View(products);
         }
-
+        [Authorize]
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -193,7 +213,7 @@ namespace Household.Controllers
 
             return View(products);
         }
-
+        [Authorize]
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -208,6 +228,10 @@ namespace Household.Controllers
         private bool ProductsExists(int id)
         {
             return _context.Products.Any(e => e.Id == id);
+        }
+        private Task<ApplicationUser> GetUserAsync()
+        {
+            return _userManager.GetUserAsync(HttpContext.User);
         }
     }
 }
