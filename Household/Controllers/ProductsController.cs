@@ -80,8 +80,8 @@ namespace Household.Controllers
             });
 
             ViewData["ProductTypes"] = productTypeSelectList;
-
-            var roomTypeList = _context.Room.ToList();
+            
+            var roomTypeList = _context.Room.Where(p => p.UserId == user.Id).ToList();
             var roomTypeSelectList = roomTypeList.Select(type => new SelectListItem
             {
                 Text = type.Name,
