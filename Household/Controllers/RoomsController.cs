@@ -133,11 +133,13 @@ namespace Household.Controllers
             {
                 return NotFound();
             }
-
+            ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var user = await GetUserAsync();
+                    room.UserId = user.Id;
                     _context.Update(room);
                     await _context.SaveChangesAsync();
                 }

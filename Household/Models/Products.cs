@@ -14,9 +14,9 @@ namespace Household.Models
         public int ProductTypeId { get; set; }
 
         public string Make { get; set; }
-
+        
         public string Model { get; set; }
-
+        [Display(Name = "Serial Number")]
         public string SerialNumber { get; set; }
 
         [DataType(DataType.Date)]
