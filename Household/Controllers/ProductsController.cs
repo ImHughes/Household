@@ -18,21 +18,23 @@ namespace Household.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
+
         public ProductsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         [Authorize]
         // GET: Products
         public async Task<IActionResult> Index(string searchString)
         {
-            ViewBag.CurrentFilter = searchString;
+            ViewBag.CurrentFilter = searchString;            
             var user = await GetUserAsync();
             var products = from p in _context.Products
                 .Include(p => p.ProductType)
-                .Include(p => p.Room)
+                .Include(p => p.Room)              
                 .Where(p => p.UserId == user.Id).ToList()
                            select p;
 
@@ -62,9 +64,10 @@ namespace Household.Controllers
         }
         [Authorize]
         // GET: Products/Create
-        public IActionResult Create()
+        public  async Task<IActionResult> Create()
         {
-            var productTypeList = _context.ProductType.ToList();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var productTypeList = _context.ProductType.Where(p => p.UserId == user.Id ).ToList();
             var productTypeSelectList = productTypeList.Select(type => new SelectListItem
             {
                 Text = type.Name,
