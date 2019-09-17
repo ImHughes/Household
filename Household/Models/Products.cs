@@ -19,7 +19,10 @@ namespace Household.Models
 
         public string SerialNumber { get; set; }
 
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
         public DateTime WarrantyExperation { get; set; }
+
         [Required]
         public string UserId { get; set; }
 

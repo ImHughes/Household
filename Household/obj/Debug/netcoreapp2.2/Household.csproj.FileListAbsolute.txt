@@ -49,4 +49,3 @@ C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.Vi
 C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.dll
 C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.pdb
 C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.csproj.CopyComplete
-C:\Users\hughes\backend\Household\Household\obj\Debug\netcoreapp2.2\Household.csprojAssemblyReference.cache

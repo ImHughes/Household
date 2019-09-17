@@ -40,6 +40,7 @@ namespace Household.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             var productsItems = _context.Products
+                .Include(p => p.ProductType)
                 .Where(p => p.RoomId == id);
 
             if (id == null)
