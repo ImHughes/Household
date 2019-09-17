@@ -40,6 +40,7 @@ namespace Household.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             var productsItems = _context.Products
+                .Include(p => p.ProductType)
                 .Where(p => p.RoomId == id);
 
             if (id == null)
@@ -132,11 +133,13 @@ namespace Household.Controllers
             {
                 return NotFound();
             }
-
+            ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var user = await GetUserAsync();
+                    room.UserId = user.Id;
                     _context.Update(room);
                     await _context.SaveChangesAsync();
                 }

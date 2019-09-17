@@ -107,11 +107,13 @@ namespace Household.Controllers
             {
                 return NotFound();
             }
-
+            ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var user = await GetUserAsync();
+                    productType.UserId = user.Id;
                     _context.Update(productType);
                     await _context.SaveChangesAsync();
                 }

@@ -27,12 +27,12 @@ namespace Household.Controllers
         [Authorize]
         // GET: Products
         public async Task<IActionResult> Index(string searchString)
-        {   
+        {
             ViewBag.CurrentFilter = searchString;
             var user = await GetUserAsync();
             var products = from p in _context.Products
-                .Include(p => p.ProductType)               
-                .Include(p => p.Room)              
+                .Include(p => p.ProductType)
+                .Include(p => p.Room)
                 .Where(p => p.UserId == user.Id).ToList()
                            select p;
 
@@ -106,15 +106,15 @@ namespace Household.Controllers
         {
 
             ModelState.Remove("UserId");
-                if (ModelState.IsValid)
-                {
+            if (ModelState.IsValid)
+            {
                 var user = await GetUserAsync();
                 products.UserId = user.Id;
-                    _context.Add(products);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-          
+                _context.Add(products);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(products);
         }
         [Authorize]
@@ -172,11 +172,13 @@ namespace Household.Controllers
             {
                 return NotFound();
             }
-
+            ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var user = await GetUserAsync();
+                    products.UserId = user.Id;
                     _context.Update(products);
                     await _context.SaveChangesAsync();
                 }

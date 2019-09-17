@@ -14,12 +14,15 @@ namespace Household.Models
         public int ProductTypeId { get; set; }
 
         public string Make { get; set; }
-
+        
         public string Model { get; set; }
-
+        [Display(Name = "Serial Number")]
         public string SerialNumber { get; set; }
 
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:d}")]
         public DateTime WarrantyExperation { get; set; }
+
         [Required]
         public string UserId { get; set; }
 
