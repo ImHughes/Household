@@ -39,22 +39,21 @@ namespace Household.Controllers
         // GET: Rooms/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            var productsItems = _context.Products
-                .Include(p => p.ProductType)
-                .Where(p => p.RoomId == id);
-
             if (id == null)
             {
                 return NotFound();
             }
 
             var room = await _context.Room
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(p => p.Products)
+                    .ThenInclude(p => p.ProductType)
+                .FirstOrDefaultAsync(p => p.Id == id);                    
+               
             if (room == null)
             {
                 return NotFound();
             }
-            ViewData["ProductsItems"] = productsItems;
+            
             return View(room);
         }
         [Authorize]
@@ -159,6 +158,7 @@ namespace Household.Controllers
             }
             return View(room);
         }
+
         [Authorize]
         // GET: Rooms/Delete/5
         public async Task<IActionResult> Delete(int? id)
